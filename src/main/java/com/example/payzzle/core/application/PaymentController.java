@@ -23,9 +23,14 @@
 package com.example.payzzle.core.application;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.net.URI;
 
 /**
  * Created by Farhan Nasim on 3/28/2026 1:24 AM
@@ -33,13 +38,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class PaymentController {
 
-    @GetMapping("/payment")
-    public String handlePayment(@RequestParam(name = "transaction_id") String transactionId,
-                                        @RequestParam(name = "amount") Integer amount,
-                                        @RequestParam(name = "currency") String currency,
-                                        @RequestParam(name = "success_url") String successUrl,
-                                        @RequestParam(name = "fail_url") String failUrl) {
+    @GetMapping("/init_payment")
+    public String initiatePayment(@RequestParam(name = "transaction_id") String transactionId,
+                                  @RequestParam(name = "amount") Integer amount,
+                                  @RequestParam(name = "currency") String currency,
+                                  @RequestParam(name = "success_url") String successUrl,
+                                  @RequestParam(name = "fail_url") String failUrl,
+                                  @RequestParam(name = "cancel_url") String cancelUrl) {
 
         return "/payment_details";
+    }
+
+    @PostMapping("/process_payment")
+    public ResponseEntity processPayment(@RequestParam(name = "card_number") String cardNumber,
+                                         @RequestParam(name = "name_on_card") String nameOnCard,
+                                         @RequestParam(name = "expiry_month") String expiryMonth,
+                                         @RequestParam(name = "expiry_year") String expiryYear,
+                                         @RequestParam(name = "cvv") String cvv) {
+
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/success")).build();
     }
 }
