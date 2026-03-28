@@ -26,6 +26,7 @@ package com.example.payzzle.core.application;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +45,15 @@ public class PaymentController {
                                   @RequestParam(name = "currency") String currency,
                                   @RequestParam(name = "success_url") String successUrl,
                                   @RequestParam(name = "fail_url") String failUrl,
-                                  @RequestParam(name = "cancel_url") String cancelUrl) {
+                                  @RequestParam(name = "cancel_url") String cancelUrl,
+                                  Model model) {
+
+        model.addAttribute("transaction_id", transactionId);
+        model.addAttribute("amount", amount);
+        model.addAttribute("currency", currency);
+        model.addAttribute("success_url", successUrl);
+        model.addAttribute("fail_url", failUrl);
+        model.addAttribute("cancel_url", cancelUrl);
 
         return "/payment_details";
     }
@@ -54,8 +63,17 @@ public class PaymentController {
                                          @RequestParam(name = "name_on_card") String nameOnCard,
                                          @RequestParam(name = "expiry_month") String expiryMonth,
                                          @RequestParam(name = "expiry_year") String expiryYear,
-                                         @RequestParam(name = "cvv") String cvv) {
+                                         @RequestParam(name = "cvv") String cvv,
+                                         @RequestParam(name = "transaction_id") String transactionId,
+                                         @RequestParam(name = "amount") String amount,
+                                         @RequestParam(name = "currency") String currency,
+                                         @RequestParam(name = "success_url") String successUrl,
+                                         @RequestParam(name = "fail_url") String failUrl,
+                                         @RequestParam(name = "cancel_url") String cancelUrl) {
 
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/success")).build();
+        return ResponseEntity.
+                status(HttpStatus.FOUND).
+                location(URI.create(successUrl)).
+                build();
     }
 }

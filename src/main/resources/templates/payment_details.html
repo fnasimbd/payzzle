@@ -53,6 +53,14 @@
         <input th:type="text" th:id="cvv" name="cvv" />
     </label>
     <br>
+
+    <input th:type="hidden" name="transaction_id" th:value="${transaction_id}" />
+    <input th:type="hidden" name="amount" th:value="${amount}" />
+    <input th:type="hidden" name="currency" th:value="${currency}" />
+    <input th:type="hidden" name="success_url" th:value="${success_url}" />
+    <input th:type="hidden" name="fail_url" th:value="${fail_url}" />
+    <input th:type="hidden" name="cancel_url" th:value="${cancel_url}" />
+
     <input type="submit" />
 </form>
 </body>
