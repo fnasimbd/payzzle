@@ -1,0 +1,59 @@
+<!--
+  ~ Copyright (c) 2026 Farhan Nasim
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  ~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  ~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+  ~ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  ~ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+  ~ OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<h1 th:text="${message}">Hello</h1>
+<form action="/process_payment" method="post">
+    <label for="card_number">
+        Card Number
+        <input th:type="text" th:id="card_number" name="card_number" />
+    </label>
+    <br>
+    <label for="name_on_card">
+        Name on Card
+        <input th:type="text" th:id="name_on_card" name="name_on_card" />
+    </label>
+    <br>
+    <label for="expiry_month">
+        Expiry Month
+        <input th:type="text" th:id="expiry_month" name="expiry_month" />
+    </label>
+    <br>
+    <label for="expiry_year">
+        Expiry Year
+        <input th:type="text" th:id="expiry_year" name="expiry_year" />
+    </label>
+    <br>
+    <label for="cvv">
+        CVV Number
+        <input th:type="text" th:id="cvv" name="cvv" />
+    </label>
+    <br>
+    <input type="submit" />
+</form>
+</body>
+</html>
