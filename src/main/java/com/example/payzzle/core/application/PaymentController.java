@@ -23,6 +23,10 @@
 package com.example.payzzle.core.application;
 
 
+import com.example.payzzle.core.domain.model.Merchant;
+import com.example.payzzle.core.domain.model.Transaction;
+import com.example.payzzle.core.domain.repositories.MerchantRepository;
+import com.example.payzzle.core.domain.repositories.TransactionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,12 +36,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 /**
  * Created by Farhan Nasim on 3/28/2026 1:24 AM
  */
 @Controller
 public class PaymentController {
+
+    private final MerchantRepository merchantRepository;
+    private final TransactionRepository transactionRepository;
+
+    public PaymentController(MerchantRepository merchantRepository,
+                             TransactionRepository transactionRepository) {
+        this.merchantRepository = merchantRepository;
+        this.transactionRepository = transactionRepository;
+    }
 
     @GetMapping("/init_payment")
     public String initiatePayment(@RequestParam(name = "transaction_id") String transactionId,
@@ -47,6 +61,13 @@ public class PaymentController {
                                   @RequestParam(name = "fail_url") String failUrl,
                                   @RequestParam(name = "cancel_url") String cancelUrl,
                                   Model model) {
+
+        Long merchantId = 1L;
+        Merchant merchant =  merchantRepository.withId(merchantId);
+
+        var transaction = new Transaction(merchant, transactionId, amount, currency, LocalDateTime.now().plusMinutes(3));
+
+        transactionRepository.save(transaction);
 
         model.addAttribute("transaction_id", transactionId);
         model.addAttribute("amount", amount);
@@ -70,6 +91,10 @@ public class PaymentController {
                                          @RequestParam(name = "success_url") String successUrl,
                                          @RequestParam(name = "fail_url") String failUrl,
                                          @RequestParam(name = "cancel_url") String cancelUrl) {
+
+        Transaction transaction = transactionRepository.withId(transactionId);
+
+        transaction.markSuccessful();
 
         return ResponseEntity.
                 status(HttpStatus.FOUND).
