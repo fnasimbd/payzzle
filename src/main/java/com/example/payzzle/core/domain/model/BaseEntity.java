@@ -31,7 +31,7 @@ import java.util.Objects;
  * Created by Farhan Nasim on 3/27/2026 11:35 PM
  */
 @MappedSuperclass
-public abstract class Entity {
+public abstract class BaseEntity {
 
     private Long id;
 

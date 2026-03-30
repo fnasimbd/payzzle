@@ -26,5 +26,5 @@ package com.example.payzzle.core.domain.model;
 /**
  * Created by Farhan Nasim on 3/27/2026 11:36 PM
  */
-public class Merchant extends Entity {
+public class Merchant extends BaseEntity {
 }

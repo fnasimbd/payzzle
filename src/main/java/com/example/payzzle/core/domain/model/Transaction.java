@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 /**
  * Created by Farhan Nasim on 3/30/2026 1:29 AM
  */
-public class Transaction extends Entity {
+public class Transaction extends BaseEntity {
 
     public Transaction(Merchant merchant,
                        String transactionId,
