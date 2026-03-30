@@ -55,7 +55,7 @@ public abstract class BaseEntity {
             return false;
         }
 
-        Entity other = (Entity) obj;
+        BaseEntity other = (BaseEntity) obj;
 
         return Objects.equals(this.getId(), other.getId());
     }
