@@ -27,16 +27,17 @@ import com.example.payzzle.core.domain.model.Merchant;
 import com.example.payzzle.core.domain.model.Transaction;
 import com.example.payzzle.core.domain.repositories.MerchantRepository;
 import com.example.payzzle.core.domain.repositories.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 
 /**
  * Created by Farhan Nasim on 3/28/2026 1:24 AM
@@ -47,6 +48,7 @@ public class PaymentController {
     private final MerchantRepository merchantRepository;
     private final TransactionRepository transactionRepository;
 
+    @Autowired
     public PaymentController(MerchantRepository merchantRepository,
                              TransactionRepository transactionRepository) {
         this.merchantRepository = merchantRepository;
@@ -54,6 +56,7 @@ public class PaymentController {
     }
 
     @GetMapping("/init_payment")
+    @Transactional
     public String initiatePayment(@RequestParam(name = "transaction_id") String transactionId,
                                   @RequestParam(name = "amount") Integer amount,
                                   @RequestParam(name = "currency") String currency,
@@ -65,7 +68,17 @@ public class PaymentController {
         Long merchantId = 1L;
         Merchant merchant =  merchantRepository.withId(merchantId);
 
-        var transaction = new Transaction(merchant, transactionId, amount, currency, LocalDateTime.now().plusMinutes(3));
+        if (!successUrl.equals(merchant.getSettings().getSuccessUrl())) {
+            return String.format("redirect:%s", URI.create(merchant.getSettings().getFailureUrl()));
+        }
+
+        var transaction = new Transaction(
+                1L,
+                merchant,
+                transactionId,
+                amount,
+                currency,
+                merchant.getSettings().transactionTimeoutFromNow());
 
         transactionRepository.save(transaction);
 

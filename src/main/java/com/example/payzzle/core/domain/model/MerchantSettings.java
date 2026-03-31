@@ -23,39 +23,51 @@
 package com.example.payzzle.core.domain.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import java.time.LocalDateTime;
 
 /**
- * Created by Farhan Nasim on 3/27/2026 11:36 PM
+ * Created by Farhan Nasim on 3/30/2026 9:35 PM
  */
-@Entity
-@Table(name = "merchant")
-public class Merchant extends BaseEntity {
+public class MerchantSettings {
 
-    @Column(name = "name")
-    private String name;
+    private Integer transactionTimeout;
+    private String successUrl;
+    private String failureUrl;
+    private String cancelUrl;
 
-    @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private MerchantSettings settings;
-
-    public String getName() {
-        return name;
+    public Integer getTransactionTimeout() {
+        return transactionTimeout;
     }
 
-    private void setName(String name) {
-        this.name = name;
+    public void setTransactionTimeout(Integer transactionTimeout) {
+        this.transactionTimeout = transactionTimeout;
     }
 
-    public MerchantSettings getSettings() {
-        return settings;
+    public String getSuccessUrl() {
+        return successUrl;
     }
 
-    private void setSettings(MerchantSettings settings) {
-        this.settings = settings;
+    public void setSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+
+    public String getFailureUrl() {
+        return failureUrl;
+    }
+
+    public void setFailureUrl(String failureUrl) {
+        this.failureUrl = failureUrl;
+    }
+
+    public String getCancelUrl() {
+        return cancelUrl;
+    }
+
+    public void setCancelUrl(String cancelUrl) {
+        this.cancelUrl = cancelUrl;
+    }
+
+    public LocalDateTime transactionTimeoutFromNow() {
+        return LocalDateTime.now().plusSeconds(getTransactionTimeout());
     }
 }

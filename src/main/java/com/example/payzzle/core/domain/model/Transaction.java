@@ -23,18 +23,87 @@
 package com.example.payzzle.core.domain.model;
 
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 /**
  * Created by Farhan Nasim on 3/30/2026 1:29 AM
  */
+@Entity
+@Table(name = "transaction")
 public class Transaction extends BaseEntity {
 
-    public Transaction(Merchant merchant,
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    private Merchant merchant;
+
+    @Column(name = "transaction_id")
+    private String transactionId;
+
+    @Column(name = "amount")
+    private Integer amount;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "timeout")
+    private LocalDateTime timeout;
+
+    protected Transaction() {
+    }
+
+    public Transaction(Long id,
+                       Merchant merchant,
                        String transactionId,
                        Integer amount,
                        String currency,
                        LocalDateTime timeout) {
+        setId(id);
+        setMerchant(merchant);
+        setTransactionId(transactionId);
+        setAmount(amount);
+        setCurrency(currency);
+        setTimeout(timeout);
+    }
+
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    private void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    private void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    private void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    private void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public LocalDateTime getTimeout() {
+        return timeout;
+    }
+
+    private void setTimeout(LocalDateTime timeout) {
+        this.timeout = timeout;
     }
 
     public void markSuccessful() {

@@ -20,42 +20,28 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.model;
+package com.example.payzzle.core.adapter.persistence;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import com.example.payzzle.core.domain.model.Merchant;
+import com.example.payzzle.core.domain.repositories.MerchantRepository;
+import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
 /**
- * Created by Farhan Nasim on 3/27/2026 11:36 PM
+ * Created by Farhan Nasim on 3/30/2026 11:20 PM
  */
-@Entity
-@Table(name = "merchant")
-public class Merchant extends BaseEntity {
+@Repository
+public class MerchantRepositoryImpl implements MerchantRepository {
 
-    @Column(name = "name")
-    private String name;
+    private final EntityManager em;
 
-    @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private MerchantSettings settings;
-
-    public String getName() {
-        return name;
+    public MerchantRepositoryImpl(EntityManager em) {
+        this.em = em;
     }
 
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    public MerchantSettings getSettings() {
-        return settings;
-    }
-
-    private void setSettings(MerchantSettings settings) {
-        this.settings = settings;
+    @Override
+    public Merchant withId(Long merchantId) {
+        return em.find(Merchant.class, merchantId);
     }
 }

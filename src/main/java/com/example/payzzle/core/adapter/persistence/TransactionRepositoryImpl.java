@@ -20,42 +20,43 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.model;
+package com.example.payzzle.core.adapter.persistence;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import com.example.payzzle.core.domain.model.Transaction;
+import com.example.payzzle.core.domain.repositories.TransactionRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
- * Created by Farhan Nasim on 3/27/2026 11:36 PM
+ * Created by Farhan Nasim on 3/31/2026 1:41 AM
  */
-@Entity
-@Table(name = "merchant")
-public class Merchant extends BaseEntity {
+@Repository
+public class TransactionRepositoryImpl implements TransactionRepository {
 
-    @Column(name = "name")
-    private String name;
+    private final EntityManager em;
 
-    @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private MerchantSettings settings;
-
-    public String getName() {
-        return name;
+    @Autowired
+    public TransactionRepositoryImpl(EntityManager em) {
+        this.em = em;
     }
 
-    private void setName(String name) {
-        this.name = name;
+    @Override
+    public Transaction save(Transaction transaction) {
+         em.persist(transaction);
+         return transaction;
     }
 
-    public MerchantSettings getSettings() {
-        return settings;
-    }
+    @Override
+    public Transaction withId(String transactionId) {
 
-    private void setSettings(MerchantSettings settings) {
-        this.settings = settings;
+        TypedQuery<Transaction> query =
+                em.createQuery("select t from Transaction t where t.transactionId = :transactionId", Transaction.class);
+
+        query.setParameter("transactionId", transactionId);
+
+        return query.getSingleResult();
     }
 }

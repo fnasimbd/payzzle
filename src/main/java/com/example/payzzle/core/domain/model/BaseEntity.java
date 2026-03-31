@@ -23,6 +23,7 @@
 package com.example.payzzle.core.domain.model;
 
 
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 import java.util.Objects;
@@ -33,6 +34,7 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class BaseEntity {
 
+    @Id
     private Long id;
 
     public Long getId() {

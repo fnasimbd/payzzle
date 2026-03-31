@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2026 Farhan Nasim
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  ~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  ~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  ~ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+  ~ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  ~ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+  ~ OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1774899004936-1" author="fnasi">
+        <createTable tableName="merchant">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_merchant"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="settings" type="jsonb"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1774899004936-2" author="fnasi">
+        <createTable tableName="transaction">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_transaction"/>
+            </column>
+            <column name="merchant_id" type="BIGINT"/>
+            <column name="transaction_id" type="VARCHAR(255)"/>
+            <column name="amount" type="INT"/>
+            <column name="currency" type="VARCHAR(255)"/>
+            <column name="timeout" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1774899004936-3" author="fnasi">
+        <addForeignKeyConstraint baseColumnNames="merchant_id" baseTableName="transaction"
+                                 constraintName="FK_TRANSACTION_ON_MERCHANT" referencedColumnNames="id"
+                                 referencedTableName="merchant"/>
+    </changeSet>
+
+</databaseChangeLog>
