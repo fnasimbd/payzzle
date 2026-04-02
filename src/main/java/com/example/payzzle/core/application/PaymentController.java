@@ -61,7 +61,7 @@ public class PaymentController {
                                   @RequestParam(name = "amount") Integer amount,
                                   @RequestParam(name = "currency") String currency,
                                   @RequestParam(name = "success_url") String successUrl,
-                                  @RequestParam(name = "fail_url") String failUrl,
+                                  @RequestParam(name = "failure_url") String failureUrl,
                                   @RequestParam(name = "cancel_url") String cancelUrl,
                                   Model model) {
 
@@ -86,7 +86,7 @@ public class PaymentController {
         model.addAttribute("amount", amount);
         model.addAttribute("currency", currency);
         model.addAttribute("success_url", successUrl);
-        model.addAttribute("fail_url", failUrl);
+        model.addAttribute("failure_url", failureUrl);
         model.addAttribute("cancel_url", cancelUrl);
 
         return "/payment_details";
@@ -102,7 +102,7 @@ public class PaymentController {
                                          @RequestParam(name = "amount") String amount,
                                          @RequestParam(name = "currency") String currency,
                                          @RequestParam(name = "success_url") String successUrl,
-                                         @RequestParam(name = "fail_url") String failUrl,
+                                         @RequestParam(name = "failure_url") String failureUrl,
                                          @RequestParam(name = "cancel_url") String cancelUrl) {
 
         Transaction transaction = transactionRepository.withId(transactionId);
