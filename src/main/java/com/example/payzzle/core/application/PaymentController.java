@@ -73,7 +73,6 @@ public class PaymentController {
         }
 
         var transaction = new Transaction(
-                1L,
                 merchant,
                 transactionId,
                 amount,

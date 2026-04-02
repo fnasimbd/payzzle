@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "transaction")
+@SequenceGenerator(name = "transaction_seq", sequenceName = "transaction_seq")
 public class Transaction extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
@@ -52,18 +53,29 @@ public class Transaction extends BaseEntity {
     protected Transaction() {
     }
 
+    public Transaction(Merchant merchant,
+                       String transactionId,
+                       Integer amount,
+                       String currency,
+                       LocalDateTime timeout) {
+
+        setMerchant(merchant);
+        setTransactionId(transactionId);
+        setAmount(amount);
+        setCurrency(currency);
+        setTimeout(timeout);
+    }
+
     public Transaction(Long id,
                        Merchant merchant,
                        String transactionId,
                        Integer amount,
                        String currency,
                        LocalDateTime timeout) {
+
+        this(merchant, transactionId, amount, currency, timeout);
+
         setId(id);
-        setMerchant(merchant);
-        setTransactionId(transactionId);
-        setAmount(amount);
-        setCurrency(currency);
-        setTimeout(timeout);
     }
 
     public Merchant getMerchant() {
@@ -108,5 +120,9 @@ public class Transaction extends BaseEntity {
 
     public void markSuccessful() {
 
+    }
+
+    public boolean hasTimedOut() {
+        return getTimeout().isBefore(LocalDateTime.now());
     }
 }

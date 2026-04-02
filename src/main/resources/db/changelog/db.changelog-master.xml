@@ -29,6 +29,6 @@
 
     <property name="now" value="now()" dbms="postgresql"/>
 
-    <include file="db/changelog/2026/03/31-01-changelog.xml"/>
+    <include file="db/changelog/2026/04/02-01-changelog.xml"/>
 
 </databaseChangeLog>

@@ -25,6 +25,7 @@ package com.example.payzzle.core.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -34,6 +35,7 @@ import org.hibernate.type.SqlTypes;
  */
 @Entity
 @Table(name = "merchant")
+@SequenceGenerator(name = "merchant_seq", sequenceName = "merchant_seq")
 public class Merchant extends BaseEntity {
 
     @Column(name = "name")
