@@ -32,3 +32,11 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.register("tailwindBuild", Exec) {
+    commandLine "npx", "tailwindcss",
+            "-i", ".\\src\\main\\resources\\static\\css\\input.css",
+            "-o", ".\\src\\main\\resources\\static\\css\\output.css"
+}
+
+processResources.dependsOn tailwindBuild
