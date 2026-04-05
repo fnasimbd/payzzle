@@ -68,16 +68,8 @@ public class PaymentController {
         Long merchantId = 1L;
         Merchant merchant =  merchantRepository.withId(merchantId);
 
-        if (!successUrl.equals(merchant.getSettings().getSuccessUrl())) {
-            return String.format("redirect:%s", URI.create(merchant.getSettings().getFailureUrl()));
-        }
-
-        var transaction = new Transaction(
-                merchant,
-                transactionId,
-                amount,
-                currency,
-                merchant.getSettings().transactionTimeoutFromNow());
+        var transaction = merchant.initiateNewTransaction(
+                transactionId, amount, currency, successUrl, failureUrl, cancelUrl);
 
         transactionRepository.save(transaction);
 

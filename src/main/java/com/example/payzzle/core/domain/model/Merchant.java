@@ -60,4 +60,31 @@ public class Merchant extends BaseEntity {
     private void setSettings(MerchantSettings settings) {
         this.settings = settings;
     }
+
+    public Transaction initiateNewTransaction(String transactionId,
+                                              Integer amount,
+                                              String currency,
+                                              String successUrl,
+                                              String failureUrl,
+                                              String cancelUrl) {
+
+        if (!successUrl.equals(getSettings().getSuccessUrl())) {
+            throw new IllegalArgumentException("Invalid initiation request.");
+        }
+
+        if (!failureUrl.equals(getSettings().getFailureUrl())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (!cancelUrl.equals(getSettings().getCancelUrl())) {
+            throw new IllegalArgumentException();
+        }
+
+        return new Transaction(
+                this,
+                transactionId,
+                amount,
+                currency,
+                getSettings().transactionTimeoutFromNow());
+    }
 }
