@@ -23,10 +23,11 @@
 package com.example.payzzle.core.application;
 
 
-import com.example.payzzle.core.domain.model.Merchant;
-import com.example.payzzle.core.domain.model.Transaction;
+import com.example.payzzle.core.domain.model.*;
 import com.example.payzzle.core.domain.repositories.MerchantRepository;
 import com.example.payzzle.core.domain.repositories.TransactionRepository;
+import com.example.payzzle.core.domain.services.AcquirerRouter;
+import com.example.payzzle.core.domain.services.CardIssuerResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +48,18 @@ public class PaymentController {
 
     private final MerchantRepository merchantRepository;
     private final TransactionRepository transactionRepository;
+    private final CardIssuerResolver cardIssuerResolver;
+    private final AcquirerRouter acquirerRouter;
 
     @Autowired
     public PaymentController(MerchantRepository merchantRepository,
-                             TransactionRepository transactionRepository) {
+                             TransactionRepository transactionRepository,
+                             CardIssuerResolver cardIssuerResolver,
+                             AcquirerRouter acquirerRouter) {
         this.merchantRepository = merchantRepository;
         this.transactionRepository = transactionRepository;
+        this.cardIssuerResolver = cardIssuerResolver;
+        this.acquirerRouter = acquirerRouter;
     }
 
     @GetMapping("/init_payment")
@@ -83,7 +90,7 @@ public class PaymentController {
         return "/payment_details";
     }
 
-    @PostMapping("/process_payment")
+    @PostMapping("/process_card_payment")
     public ResponseEntity processPayment(@RequestParam(name = "card_number") String cardNumber,
                                          @RequestParam(name = "name_on_card") String nameOnCard,
                                          @RequestParam(name = "expiry_month") String expiryMonth,
@@ -98,11 +105,35 @@ public class PaymentController {
 
         Transaction transaction = transactionRepository.withId(transactionId);
 
-        transaction.markSuccessful();
+        if (transaction.hasTimedOut()) {
+            return ResponseEntity.
+                    status(HttpStatus.FOUND).
+                    location(URI.create(String.format("%s?transaction_id=%s&error_message=%s",
+                            failureUrl, transactionId, "Transaction+timed+out"))).
+                    build();
+        }
 
-        return ResponseEntity.
-                status(HttpStatus.FOUND).
-                location(URI.create(successUrl)).
-                build();
+        CardIssuer cardIssuer = cardIssuerResolver.resolveCardIssuer(cardNumber);
+
+        AuthorizationResponse response = acquirerRouter.processRequest(cardIssuer, transaction, cardNumber,
+                nameOnCard, expiryMonth, expiryYear, cvv);
+
+        if (response.isSuccess()) {
+
+            transaction.markSuccessful();
+
+            return ResponseEntity.
+                    status(HttpStatus.FOUND).
+                    location(URI.create(String.format("%s?transaction_id=%s", successUrl, transactionId))).
+                    build();
+        } else {
+
+            transaction.markFailed();
+
+            return ResponseEntity.
+                    status(HttpStatus.FOUND).
+                    location(URI.create(String.format("%s?transaction_id=%s", failureUrl, transactionId))).
+                    build();
+        }
     }
 }
