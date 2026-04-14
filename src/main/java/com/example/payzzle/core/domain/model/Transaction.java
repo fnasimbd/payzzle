@@ -118,10 +118,6 @@ public class Transaction extends BaseEntity {
         this.timeout = timeout;
     }
 
-    public void markSuccessful() {
-
-    }
-
     public boolean hasTimedOut() {
         return getTimeout().isBefore(LocalDateTime.now());
     }
