@@ -45,8 +45,8 @@ tasks.register("tailwindBuild", Exec) {
     dependsOn("npmInstall")
 
     commandLine "npx", "tailwindcss",
-            "-i", ".\\src\\main\\resources\\static\\css\\input.css",
-            "-o", ".\\src\\main\\resources\\static\\css\\output.css"
+            "-i", "./src/main/resources/static/css/input.css",
+            "-o", "./src/main/resources/static/css/output.css"
 }
 
 processResources.dependsOn tailwindBuild
