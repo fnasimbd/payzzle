@@ -40,7 +40,14 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.register("npmInstall", Exec) {
+    commandLine "npm", "ci"
+}
+
 tasks.register("tailwindBuild", Exec) {
+
+    dependsOn("npmInstall")
+
     commandLine "npx", "tailwindcss",
             "-i", ".\\src\\main\\resources\\static\\css\\input.css",
             "-o", ".\\src\\main\\resources\\static\\css\\output.css"
