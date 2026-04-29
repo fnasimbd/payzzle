@@ -27,6 +27,7 @@ import com.example.payzzle.core.domain.model.*;
 import com.example.payzzle.core.domain.repositories.MerchantRepository;
 import com.example.payzzle.core.domain.repositories.TransactionRepository;
 import com.example.payzzle.core.domain.services.AcquirerRouter;
+import com.example.payzzle.core.domain.services.ThreeDSAuthenticator;
 import com.example.payzzle.core.domain.services.CardIssuerResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,16 +51,19 @@ public class PaymentController {
     private final TransactionRepository transactionRepository;
     private final CardIssuerResolver cardIssuerResolver;
     private final AcquirerRouter acquirerRouter;
+    private final ThreeDSAuthenticator threeDSAuthenticator;
 
     @Autowired
     public PaymentController(MerchantRepository merchantRepository,
                              TransactionRepository transactionRepository,
                              CardIssuerResolver cardIssuerResolver,
-                             AcquirerRouter acquirerRouter) {
+                             AcquirerRouter acquirerRouter,
+                             ThreeDSAuthenticator threeDSAuthenticator) {
         this.merchantRepository = merchantRepository;
         this.transactionRepository = transactionRepository;
         this.cardIssuerResolver = cardIssuerResolver;
         this.acquirerRouter = acquirerRouter;
+        this.threeDSAuthenticator = threeDSAuthenticator;
     }
 
     @GetMapping("/init_payment")
@@ -114,6 +118,8 @@ public class PaymentController {
         }
 
         CardIssuer cardIssuer = cardIssuerResolver.resolveCardIssuer(cardNumber);
+
+        threeDSAuthenticator.authenticate(cardIssuer);
 
         AuthorizationResponse response = acquirerRouter.processRequest(cardIssuer, transaction, cardNumber,
                 nameOnCard, expiryMonth, expiryYear, cvv);
