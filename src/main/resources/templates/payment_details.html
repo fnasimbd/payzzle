@@ -30,7 +30,7 @@
 <h1 th:text="${message}">Hello</h1>
 <div class="grid grid-cols-4">
     <div class="col-start-2 col-span-2">
-        <form action="/process_payment" method="post">
+        <form action="/process_card_payment" method="post">
             <label for="card_number">
                 Card Number
                 <input th:type="text" th:id="card_number" name="card_number" />
@@ -61,7 +61,7 @@
             <input th:type="hidden" name="amount" th:value="${amount}" />
             <input th:type="hidden" name="currency" th:value="${currency}" />
             <input th:type="hidden" name="success_url" th:value="${success_url}" />
-            <input th:type="hidden" name="fail_url" th:value="${fail_url}" />
+            <input th:type="hidden" name="failure_url" th:value="${fail_url}" />
             <input th:type="hidden" name="cancel_url" th:value="${cancel_url}" />
 
             <input type="submit" />
