@@ -23,11 +23,15 @@
 package com.example.payzzle.core.domain.services;
 
 
-import com.example.payzzle.core.domain.model.CardIssuer;
+import com.example.payzzle.core.domain.model.Card;
 
 /**
  * Created by Farhan Nasim on 4/12/2026 8:43 PM
  */
 public interface CardIssuerResolver {
-    CardIssuer resolveCardIssuer(String cardNumber);
+
+    Card resolveCardDetails(String cardNumber,
+                            String nameOnCard,
+                            Integer expiryMonth,
+                            Integer expiryYear, Integer cvv);
 }

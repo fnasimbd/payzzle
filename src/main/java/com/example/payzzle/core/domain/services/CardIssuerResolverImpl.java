@@ -23,7 +23,7 @@
 package com.example.payzzle.core.domain.services;
 
 
-import com.example.payzzle.core.domain.model.CardIssuer;
+import com.example.payzzle.core.domain.model.Card;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,14 +33,14 @@ import org.springframework.stereotype.Service;
 public class CardIssuerResolverImpl implements CardIssuerResolver {
 
     @Override
-    public CardIssuer resolveCardIssuer(String cardNumber) {
+    public Card resolveCardDetails(String cardNumber, String nameOnCard, Integer expiryMonth, Integer expiryYear, Integer cvv) {
 
         String binNumber = cardNumber.substring(0, 1);
 
         switch (binNumber) {
-            case "4": return new CardIssuer(binNumber, "VISA");
-            case "5": return new CardIssuer(binNumber, "MASTERCARD");
-            case "3": return new CardIssuer(binNumber, "AMEX");
+            case "4": return new Card(cardNumber, binNumber, "VISA", nameOnCard, expiryMonth, expiryYear);
+            case "5": return new Card(cardNumber, binNumber, "MASTERCARD", nameOnCard, expiryMonth, expiryYear);
+            case "3": return new Card(cardNumber, binNumber, "AMEX", nameOnCard, expiryMonth, expiryYear);
             default: throw new RuntimeException("Unsupported card type");
         }
     }

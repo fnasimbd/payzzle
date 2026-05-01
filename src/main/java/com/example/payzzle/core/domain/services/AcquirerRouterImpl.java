@@ -25,7 +25,7 @@ package com.example.payzzle.core.domain.services;
 
 import com.example.payzzle.core.domain.model.Acquirer;
 import com.example.payzzle.core.domain.model.AuthorizationResponse;
-import com.example.payzzle.core.domain.model.CardIssuer;
+import com.example.payzzle.core.domain.model.Card;
 import com.example.payzzle.core.domain.model.Transaction;
 import org.springframework.stereotype.Service;
 
@@ -36,22 +36,22 @@ import org.springframework.stereotype.Service;
 public class AcquirerRouterImpl implements AcquirerRouter {
 
     @Override
-    public AuthorizationResponse processRequest(CardIssuer cardIssuer,
-                                                Transaction transaction,
-                                                String cardNumber,
-                                                String nameOnCard,
-                                                String expiryMonth,
-                                                String expiryYear,
-                                                String cvv) {
+    public AuthorizationResponse processPaymentRequest(Card card,
+                                                       Transaction transaction,
+                                                       String cardNumber,
+                                                       String nameOnCard,
+                                                       Integer expiryMonth,
+                                                       Integer expiryYear,
+                                                       Integer cvv) {
 
-        Acquirer acquirer = resolveAcquirer(cardIssuer);
+        Acquirer acquirer = resolveAcquirer(card);
 
         // todo: forward authorization request to the acquirer
 
         return null;
     }
 
-    private Acquirer resolveAcquirer(CardIssuer cardIssuer) {
+    private Acquirer resolveAcquirer(Card card) {
 
         // todo: resolve acquirer based on card issuer
 

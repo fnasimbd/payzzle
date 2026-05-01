@@ -97,11 +97,11 @@ public class PaymentController {
     @PostMapping("/process_card_payment")
     public ResponseEntity processPayment(@RequestParam(name = "card_number") String cardNumber,
                                          @RequestParam(name = "name_on_card") String nameOnCard,
-                                         @RequestParam(name = "expiry_month") String expiryMonth,
-                                         @RequestParam(name = "expiry_year") String expiryYear,
-                                         @RequestParam(name = "cvv") String cvv,
+                                         @RequestParam(name = "expiry_month") Integer expiryMonth,
+                                         @RequestParam(name = "expiry_year") Integer expiryYear,
+                                         @RequestParam(name = "cvv") Integer cvv,
                                          @RequestParam(name = "transaction_id") String transactionId,
-                                         @RequestParam(name = "amount") String amount,
+                                         @RequestParam(name = "amount") double amount,
                                          @RequestParam(name = "currency") String currency,
                                          @RequestParam(name = "success_url") String successUrl,
                                          @RequestParam(name = "failure_url") String failureUrl,
@@ -117,9 +117,9 @@ public class PaymentController {
                     build();
         }
 
-        CardIssuer cardIssuer = cardIssuerResolver.resolveCardIssuer(cardNumber);
+        Card card = cardIssuerResolver.resolveCardDetails(cardNumber, nameOnCard, expiryMonth, expiryYear, cvv);
 
-        ARes authRes = threeDSAuthenticator.authenticate(cardIssuer);
+        ARes authRes = threeDSAuthenticator.authenticate(card);
 
         switch (authRes.getTransStatus()) {
 
@@ -127,7 +127,7 @@ public class PaymentController {
 
                 String acsTransID = authRes.getAcsTransID();
 
-                AuthorizationResponse response = acquirerRouter.processPaymentRequest(cardIssuer, transaction, cardNumber,
+                AuthorizationResponse response = acquirerRouter.processPaymentRequest(card, transaction, cardNumber,
                         nameOnCard, expiryMonth, expiryYear, cvv);
 
                 if (response.isSuccess()) {

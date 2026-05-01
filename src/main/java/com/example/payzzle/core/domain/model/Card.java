@@ -23,22 +23,45 @@
 package com.example.payzzle.core.domain.model;
 
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * Created by Farhan Nasim on 4/12/2026 8:40 PM
  */
-public class CardIssuer {
+public class Card {
 
+    private String cardNumber;
     private String bin;
     private String scheme;
+    private String nameOnCard;
+    private Integer expiryMonth;
+    private Integer expiryYear;
     private String type;
     private String brand;
     private String bank;
     private String country;
 
-    public CardIssuer(String bin,
-                      String scheme) {
+    public Card(String cardNumber,
+                String bin,
+                String scheme,
+                String nameOnCard,
+                Integer expiryMonth,
+                Integer expiryYear) {
+        setCardNumber(cardNumber);
         setBin(bin);
         setScheme(scheme);
+        setNameOnCard(nameOnCard);
+        setExpiryMonth(expiryMonth);
+        setExpiryYear(expiryYear);
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    private void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public String getBin() {
@@ -57,6 +80,30 @@ public class CardIssuer {
         this.scheme = scheme;
     }
 
+    public String getNameOnCard() {
+        return nameOnCard;
+    }
+
+    private void setNameOnCard(String nameOnCard) {
+        this.nameOnCard = nameOnCard;
+    }
+
+    public Integer getExpiryMonth() {
+        return expiryMonth;
+    }
+
+    private void setExpiryMonth(Integer expiryMonth) {
+        this.expiryMonth = expiryMonth;
+    }
+
+    public Integer getExpiryYear() {
+        return expiryYear;
+    }
+
+    private void setExpiryYear(Integer expiryYear) {
+        this.expiryYear = expiryYear;
+    }
+
     public String getType() {
         return type;
     }
@@ -69,7 +116,7 @@ public class CardIssuer {
         return brand;
     }
 
-    public void setBrand(String brand) {
+    private void setBrand(String brand) {
         this.brand = brand;
     }
 
@@ -77,7 +124,7 @@ public class CardIssuer {
         return bank;
     }
 
-    public void setBank(String bank) {
+    private void setBank(String bank) {
         this.bank = bank;
     }
 
@@ -85,7 +132,12 @@ public class CardIssuer {
         return country;
     }
 
-    public void setCountry(String country) {
+    private void setCountry(String country) {
         this.country = country;
+    }
+
+    public Date expiryDate() {
+        LocalDate expiryDate = LocalDate.of(getExpiryYear(), getExpiryMonth(), 1);
+        return java.sql.Date.valueOf(expiryDate);
     }
 }

@@ -24,7 +24,7 @@ package com.example.payzzle.core.domain.services;
 
 
 import com.example.payzzle.core.domain.model.AuthorizationResponse;
-import com.example.payzzle.core.domain.model.CardIssuer;
+import com.example.payzzle.core.domain.model.Card;
 import com.example.payzzle.core.domain.model.Transaction;
 
 /**
@@ -32,11 +32,11 @@ import com.example.payzzle.core.domain.model.Transaction;
  */
 public interface AcquirerRouter {
 
-    AuthorizationResponse processRequest(CardIssuer cardIssuer,
-                                         Transaction transaction,
-                                         String cardNumber,
-                                         String nameOnCard,
-                                         String expiryMonth,
-                                         String expiryYear,
-                                         String cvv);
+    AuthorizationResponse processPaymentRequest(Card card,
+                                                Transaction transaction,
+                                                String cardNumber,
+                                                String nameOnCard,
+                                                Integer expiryMonth,
+                                                Integer expiryYear,
+                                                Integer cvv);
 }

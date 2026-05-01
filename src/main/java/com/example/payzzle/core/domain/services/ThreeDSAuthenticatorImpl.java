@@ -25,7 +25,7 @@ package com.example.payzzle.core.domain.services;
 
 import com.example.payzzle.core.application.AReq;
 import com.example.payzzle.core.application.ARes;
-import com.example.payzzle.core.domain.model.CardIssuer;
+import com.example.payzzle.core.domain.model.Card;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,11 +35,11 @@ import org.springframework.stereotype.Service;
 public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
 
     @Override
-    public ARes authenticate(CardIssuer cardIssuer) {
+    public ARes authenticate(Card card) {
 
         DirectoryServerAdapter directoryServerAdapter = null;
 
-        if (cardIssuer.getScheme().equals("VISA")) {
+        if (card.getScheme().equals("VISA")) {
             directoryServerAdapter = new VisaDirectoryServerAdapter();
         }
 
