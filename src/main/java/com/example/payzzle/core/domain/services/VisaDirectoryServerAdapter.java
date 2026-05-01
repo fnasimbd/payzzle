@@ -35,7 +35,7 @@ public class VisaDirectoryServerAdapter implements DirectoryServerAdapter {
 
     private final String directoryServerUrl = "http://localhost:8080/card_network/authenticate_owner";
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public ARes authenticate(AReq request) {

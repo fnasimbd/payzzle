@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
 
     @Override
-    public void authenticate(CardIssuer cardIssuer) {
+    public ARes authenticate(CardIssuer cardIssuer) {
 
         DirectoryServerAdapter directoryServerAdapter = null;
 
@@ -47,24 +47,6 @@ public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
 
         // todo: populate AReq
 
-        ARes response = directoryServerAdapter.authenticate(request);
-
-        String transStatus = response.getTransStatus();
-
-        switch (transStatus) {
-            case "Y":
-                break;
-            case "N":
-                break;
-            case "U":
-                break;
-            case "C":
-                String acsURL = response.getAcsURL();
-                break;
-            case "R":
-                String rejectionReason = response.getTransStatusReason();
-                break;
-            default:
-        }
+        return directoryServerAdapter.authenticate(request);
     }
 }

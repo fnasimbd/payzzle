@@ -23,11 +23,12 @@
 package com.example.payzzle.core.domain.services;
 
 
+import com.example.payzzle.core.application.ARes;
 import com.example.payzzle.core.domain.model.CardIssuer;
 
 /**
  * Created by Farhan Nasim on 4/18/2026 3:53 AM
  */
 public interface ThreeDSAuthenticator {
-    void authenticate(CardIssuer cardIssuer);
+    ARes authenticate(CardIssuer cardIssuer);
 }

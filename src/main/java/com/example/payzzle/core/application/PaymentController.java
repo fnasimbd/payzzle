@@ -119,27 +119,82 @@ public class PaymentController {
 
         CardIssuer cardIssuer = cardIssuerResolver.resolveCardIssuer(cardNumber);
 
-        threeDSAuthenticator.authenticate(cardIssuer);
+        ARes authRes = threeDSAuthenticator.authenticate(cardIssuer);
 
-        AuthorizationResponse response = acquirerRouter.processRequest(cardIssuer, transaction, cardNumber,
-                nameOnCard, expiryMonth, expiryYear, cvv);
+        switch (authRes.getTransStatus()) {
 
-        if (response.isSuccess()) {
+            case "Y" -> {
 
-            transaction.markSuccessful();
+                String acsTransID = authRes.getAcsTransID();
 
-            return ResponseEntity.
-                    status(HttpStatus.FOUND).
-                    location(URI.create(String.format("%s?transaction_id=%s", successUrl, transactionId))).
-                    build();
-        } else {
+                AuthorizationResponse response = acquirerRouter.processPaymentRequest(cardIssuer, transaction, cardNumber,
+                        nameOnCard, expiryMonth, expiryYear, cvv);
 
-            transaction.markFailed();
+                if (response.isSuccess()) {
 
-            return ResponseEntity.
-                    status(HttpStatus.FOUND).
-                    location(URI.create(String.format("%s?transaction_id=%s", failureUrl, transactionId))).
-                    build();
+                    transaction.markSuccessful();
+
+                    return ResponseEntity.
+                            status(HttpStatus.FOUND).
+                            location(URI.create(String.format("%s?transaction_id=%s", successUrl, transactionId))).
+                            build();
+                } else {
+
+                    transaction.markFailed();
+
+                    return ResponseEntity.
+                            status(HttpStatus.FOUND).
+                            location(URI.create(String.format("%s?transaction_id=%s", failureUrl, transactionId))).
+                            build();
+                }
+            }
+            case "N" -> {
+                // failed
+
+                transaction.markFailed();
+
+                return createFailureResponse(transactionId, failureUrl, null);
+            }
+            case "U" -> {
+                // unavailable
+                String transStatusReason = authRes.getTransStatusReason();
+
+                // todo: retry based on reason (?)
+
+                transaction.markFailed();
+
+                return createFailureResponse(transactionId, failureUrl, transStatusReason);
+            }
+            case "C" -> {
+
+                String acsURL = authRes.getAcsURL();
+
+                return ResponseEntity.
+                        status(HttpStatus.FOUND).
+                        location(URI.create(String.format("%s?transaction_id=%s&acs_url=%s", successUrl, transactionId, acsURL))).
+                        build();
+            }
+            case "R" -> {
+
+                String transStatusReason = authRes.getTransStatusReason();
+
+                transaction.markFailed();
+
+                return createFailureResponse(transactionId, failureUrl, transStatusReason);
+            }
+            default -> {
+                return createFailureResponse(transactionId, failureUrl, null);
+            }
         }
+    }
+
+    private static ResponseEntity<Object> createFailureResponse(String transactionId,
+                                                                String failureUrl,
+                                                                String failureReason) {
+
+        return ResponseEntity.status(HttpStatus.FOUND).
+                location(URI.create(String.format("%s?transaction_id=%s&reason=%s",
+                        failureUrl, transactionId, failureReason))).
+                build();
     }
 }
