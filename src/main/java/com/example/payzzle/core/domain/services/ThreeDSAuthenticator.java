@@ -30,5 +30,5 @@ import com.example.payzzle.core.domain.model.Card;
  * Created by Farhan Nasim on 4/18/2026 3:53 AM
  */
 public interface ThreeDSAuthenticator {
-    ARes authenticate(Card card);
+    ARes authenticate(Card card, String transactionId, double purchaseAmount);
 }

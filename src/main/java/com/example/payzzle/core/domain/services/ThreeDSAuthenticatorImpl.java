@@ -28,14 +28,20 @@ import com.example.payzzle.core.application.ARes;
 import com.example.payzzle.core.domain.model.Card;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by Farhan Nasim on 4/18/2026 2:51 PM
  */
 @Service
 public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
 
+    private final ThreadLocal<DateFormat> dateFormat =
+            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
+
     @Override
-    public ARes authenticate(Card card) {
+    public ARes authenticate(Card card, String transactionId, double purchaseAmount) {
 
         DirectoryServerAdapter directoryServerAdapter = null;
 
@@ -44,8 +50,10 @@ public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
         }
 
         AReq request = new AReq();
-
-        // todo: populate AReq
+        request.setThreeDSServerTransID(transactionId);
+        request.setAcctNumber(card.getCardNumber());
+        request.setPurchaseAmount(Double.toString(purchaseAmount));
+        request.setCardExpiryDate(dateFormat.get().format(card.expiryDate()));
 
         return directoryServerAdapter.authenticate(request);
     }

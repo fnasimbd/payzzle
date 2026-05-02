@@ -119,7 +119,7 @@ public class PaymentController {
 
         Card card = cardIssuerResolver.resolveCardDetails(cardNumber, nameOnCard, expiryMonth, expiryYear, cvv);
 
-        ARes authRes = threeDSAuthenticator.authenticate(card);
+        ARes authRes = threeDSAuthenticator.authenticate(card, transactionId, amount);
 
         switch (authRes.getTransStatus()) {
 
