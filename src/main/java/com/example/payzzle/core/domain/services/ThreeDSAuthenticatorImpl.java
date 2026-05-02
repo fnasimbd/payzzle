@@ -27,6 +27,7 @@ import com.example.payzzle.core.application.AReq;
 import com.example.payzzle.core.application.ARes;
 import com.example.payzzle.core.domain.model.Card;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,13 +41,19 @@ public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
     private final ThreadLocal<DateFormat> dateFormat =
             ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
 
+    private final RestTemplate restTemplate;
+
+    public ThreeDSAuthenticatorImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
     @Override
     public ARes authenticate(Card card, String transactionId, double purchaseAmount) {
 
         DirectoryServerAdapter directoryServerAdapter = null;
 
         if (card.getScheme().equals("VISA")) {
-            directoryServerAdapter = new VisaDirectoryServerAdapter();
+            directoryServerAdapter = new VisaDirectoryServerAdapter(restTemplate);
         }
 
         AReq request = new AReq();

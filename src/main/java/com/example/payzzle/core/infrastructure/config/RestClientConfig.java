@@ -20,36 +20,27 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.services;
+package com.example.payzzle.core.infrastructure.config;
 
 
-import com.example.payzzle.core.application.AReq;
-import com.example.payzzle.core.application.ARes;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+
 /**
- * Created by Farhan Nasim on 4/29/2026 9:33 PM
+ * Created by Farhan Nasim on 5/2/2026 1:11 PM
  */
-public class VisaDirectoryServerAdapter implements DirectoryServerAdapter {
+@Configuration
+public class RestClientConfig {
 
-    private final String directoryServerUrl = "http://localhost:8080/card_network/authenticate_owner";
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
 
-    private final RestTemplate restTemplate;
-
-    public VisaDirectoryServerAdapter(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    @Override
-    public ARes authenticate(AReq request) {
-
-        ResponseEntity<ARes> response = restTemplate.postForEntity(directoryServerUrl, request, ARes.class);
-
-        if (response.getStatusCode().isError()) {
-            throw new RuntimeException(response.getStatusCode().toString()); // todo: throw appropriate exception
-        }
-
-        return response.getBody();
+        return builder.
+                connectTimeout(Duration.ofSeconds(2)).
+                readTimeout(Duration.ofSeconds(2)).build();
     }
 }
