@@ -20,7 +20,7 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.application;
+package com.example.payzzle.core.domain.port;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

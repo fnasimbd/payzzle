@@ -23,7 +23,7 @@
 package com.example.payzzle.core.domain.services;
 
 
-import com.example.payzzle.core.application.ARes;
+import com.example.payzzle.core.domain.port.ARes;
 import com.example.payzzle.core.domain.model.Card;
 
 /**

@@ -20,24 +20,25 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.services;
+package com.example.payzzle.core.adapter;
 
 
-import com.example.payzzle.core.application.AReq;
-import com.example.payzzle.core.application.ARes;
+import com.example.payzzle.core.domain.port.AReq;
+import com.example.payzzle.core.domain.port.ARes;
+import com.example.payzzle.core.domain.port.DirectoryServer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by Farhan Nasim on 4/29/2026 9:33 PM
  */
-public class VisaDirectoryServerAdapter implements DirectoryServerAdapter {
+public class MockVisaDirectoryServer implements DirectoryServer {
 
     private final String directoryServerUrl = "http://localhost:8080/card_network/authenticate_owner";
 
     private final RestTemplate restTemplate;
 
-    public VisaDirectoryServerAdapter(RestTemplate restTemplate) {
+    public MockVisaDirectoryServer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

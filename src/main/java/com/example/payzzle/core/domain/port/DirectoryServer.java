@@ -20,15 +20,12 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.services;
+package com.example.payzzle.core.domain.port;
 
-
-import com.example.payzzle.core.application.AReq;
-import com.example.payzzle.core.application.ARes;
 
 /**
  * Created by Farhan Nasim on 4/29/2026 9:32 PM
  */
-public interface DirectoryServerAdapter {
+public interface DirectoryServer {
     ARes authenticate(AReq request);
 }

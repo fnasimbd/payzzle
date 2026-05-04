@@ -24,6 +24,7 @@ package com.example.payzzle.core.application;
 
 
 import com.example.payzzle.core.domain.model.*;
+import com.example.payzzle.core.domain.port.ARes;
 import com.example.payzzle.core.domain.port.BinData;
 import com.example.payzzle.core.domain.port.BinLookupService;
 import com.example.payzzle.core.domain.repositories.MerchantRepository;

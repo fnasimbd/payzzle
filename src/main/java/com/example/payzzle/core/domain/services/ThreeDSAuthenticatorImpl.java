@@ -23,9 +23,11 @@
 package com.example.payzzle.core.domain.services;
 
 
-import com.example.payzzle.core.application.AReq;
-import com.example.payzzle.core.application.ARes;
+import com.example.payzzle.core.adapter.MockVisaDirectoryServer;
+import com.example.payzzle.core.domain.port.AReq;
+import com.example.payzzle.core.domain.port.ARes;
 import com.example.payzzle.core.domain.model.Card;
+import com.example.payzzle.core.domain.port.DirectoryServer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,10 +52,10 @@ public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
     @Override
     public ARes authenticate(Card card, String transactionId, double purchaseAmount) {
 
-        DirectoryServerAdapter directoryServerAdapter = null;
+        DirectoryServer directoryServer = null;
 
         if (card.getScheme().equals("VISA")) {
-            directoryServerAdapter = new VisaDirectoryServerAdapter(restTemplate);
+            directoryServer = new MockVisaDirectoryServer(restTemplate);
         }
 
         AReq request = new AReq();
@@ -62,6 +64,6 @@ public class ThreeDSAuthenticatorImpl implements ThreeDSAuthenticator {
         request.setPurchaseAmount(Double.toString(purchaseAmount));
         request.setCardExpiryDate(dateFormat.get().format(card.expiryDate()));
 
-        return directoryServerAdapter.authenticate(request);
+        return directoryServer.authenticate(request);
     }
 }
