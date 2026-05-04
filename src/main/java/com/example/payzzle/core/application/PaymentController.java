@@ -24,11 +24,12 @@ package com.example.payzzle.core.application;
 
 
 import com.example.payzzle.core.domain.model.*;
+import com.example.payzzle.core.domain.port.BinData;
+import com.example.payzzle.core.domain.port.BinLookupService;
 import com.example.payzzle.core.domain.repositories.MerchantRepository;
 import com.example.payzzle.core.domain.repositories.TransactionRepository;
 import com.example.payzzle.core.domain.services.AcquirerRouter;
 import com.example.payzzle.core.domain.services.ThreeDSAuthenticator;
-import com.example.payzzle.core.domain.services.CardIssuerResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,21 +50,21 @@ public class PaymentController {
 
     private final MerchantRepository merchantRepository;
     private final TransactionRepository transactionRepository;
-    private final CardIssuerResolver cardIssuerResolver;
     private final AcquirerRouter acquirerRouter;
     private final ThreeDSAuthenticator threeDSAuthenticator;
+    private final BinLookupService binLookupService;
 
     @Autowired
     public PaymentController(MerchantRepository merchantRepository,
                              TransactionRepository transactionRepository,
-                             CardIssuerResolver cardIssuerResolver,
                              AcquirerRouter acquirerRouter,
-                             ThreeDSAuthenticator threeDSAuthenticator) {
+                             ThreeDSAuthenticator threeDSAuthenticator,
+                             BinLookupService binLookupService) {
         this.merchantRepository = merchantRepository;
         this.transactionRepository = transactionRepository;
-        this.cardIssuerResolver = cardIssuerResolver;
         this.acquirerRouter = acquirerRouter;
         this.threeDSAuthenticator = threeDSAuthenticator;
+        this.binLookupService = binLookupService;
     }
 
     @GetMapping("/init_payment")
@@ -117,7 +118,9 @@ public class PaymentController {
                     build();
         }
 
-        Card card = cardIssuerResolver.resolveCardDetails(cardNumber, nameOnCard, expiryMonth, expiryYear, cvv);
+        BinData binData = binLookupService.findBinData(cardNumber.substring(0, 8));
+
+        Card card = new Card(cardNumber, binData.getScheme(), binData.getBrand(), nameOnCard, expiryMonth, expiryYear, cvv);
 
         ARes authRes = threeDSAuthenticator.authenticate(card, transactionId, amount);
 

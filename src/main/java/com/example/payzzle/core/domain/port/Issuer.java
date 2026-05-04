@@ -20,18 +20,39 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.services;
+package com.example.payzzle.core.domain.port;
 
-
-import com.example.payzzle.core.domain.model.Card;
 
 /**
- * Created by Farhan Nasim on 4/12/2026 8:43 PM
+ * Created by Farhan Nasim on 5/4/2026 9:07 PM
  */
-public interface CardIssuerResolver {
+public class Issuer {
 
-    Card resolveCardDetails(String cardNumber,
-                            String nameOnCard,
-                            Integer expiryMonth,
-                            Integer expiryYear, Integer cvv);
+    private String name;
+    private String country;
+    private String currency;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

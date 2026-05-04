@@ -32,28 +32,30 @@ import java.util.Date;
 public class Card {
 
     private String cardNumber;
-    private String bin;
     private String scheme;
     private String nameOnCard;
     private Integer expiryMonth;
     private Integer expiryYear;
+    private Integer cvv;
     private String type;
     private String brand;
     private String bank;
     private String country;
 
     public Card(String cardNumber,
-                String bin,
                 String scheme,
+                String brand,
                 String nameOnCard,
                 Integer expiryMonth,
-                Integer expiryYear) {
+                Integer expiryYear,
+                Integer cvv) {
         setCardNumber(cardNumber);
-        setBin(bin);
         setScheme(scheme);
+        setBrand(brand);
         setNameOnCard(nameOnCard);
         setExpiryMonth(expiryMonth);
         setExpiryYear(expiryYear);
+        setCvv(cvv);
     }
 
     public String getCardNumber() {
@@ -62,14 +64,6 @@ public class Card {
 
     private void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
-    }
-
-    public String getBin() {
-        return bin;
-    }
-
-    private void setBin(String bin) {
-        this.bin = bin;
     }
 
     public String getScheme() {
@@ -102,6 +96,14 @@ public class Card {
 
     private void setExpiryYear(Integer expiryYear) {
         this.expiryYear = expiryYear;
+    }
+
+    public Integer getCvv() {
+        return cvv;
+    }
+
+    private void setCvv(Integer cvv) {
+        this.cvv = cvv;
     }
 
     public String getType() {

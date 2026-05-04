@@ -20,28 +20,12 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.services;
+package com.example.payzzle.core.domain.port;
 
-
-import com.example.payzzle.core.domain.model.Card;
-import org.springframework.stereotype.Service;
 
 /**
- * Created by Farhan Nasim on 4/13/2026 1:14 AM
+ * Created by Farhan Nasim on 5/5/2026 12:27 AM
  */
-@Service
-public class CardIssuerResolverImpl implements CardIssuerResolver {
-
-    @Override
-    public Card resolveCardDetails(String cardNumber, String nameOnCard, Integer expiryMonth, Integer expiryYear, Integer cvv) {
-
-        String binNumber = cardNumber.substring(0, 1);
-
-        switch (binNumber) {
-            case "4": return new Card(cardNumber, binNumber, "VISA", nameOnCard, expiryMonth, expiryYear);
-            case "5": return new Card(cardNumber, binNumber, "MASTERCARD", nameOnCard, expiryMonth, expiryYear);
-            case "3": return new Card(cardNumber, binNumber, "AMEX", nameOnCard, expiryMonth, expiryYear);
-            default: throw new RuntimeException("Unsupported card type");
-        }
-    }
+public interface BinLookupService {
+    BinData findBinData(String bin);
 }
