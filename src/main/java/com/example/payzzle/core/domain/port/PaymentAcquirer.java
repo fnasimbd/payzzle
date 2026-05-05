@@ -20,30 +20,12 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.model;
+package com.example.payzzle.core.domain.port;
 
 
 /**
- * Created by Farhan Nasim on 4/4/2026 11:29 PM
+ * Created by Farhan Nasim on 4/5/2026 11:12 PM
  */
-public class AcquirerSettings {
-
-    private boolean async;
-    private String url;
-
-    public boolean isAsync() {
-        return async;
-    }
-
-    public void setAsync(boolean async) {
-        this.async = async;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+public interface PaymentAcquirer {
+    Iso8583AuthResponse authorizePaymentRequest(Iso8583AuthRequest authRequest);
 }

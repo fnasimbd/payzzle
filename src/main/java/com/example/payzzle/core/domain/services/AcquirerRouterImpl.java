@@ -23,10 +23,11 @@
 package com.example.payzzle.core.domain.services;
 
 
-import com.example.payzzle.core.domain.model.Acquirer;
 import com.example.payzzle.core.domain.model.Card;
 import com.example.payzzle.core.domain.model.Transaction;
+import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
 import com.example.payzzle.core.domain.port.Iso8583AuthResponse;
+import com.example.payzzle.core.domain.port.PaymentAcquirer;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,16 +45,20 @@ public class AcquirerRouterImpl implements AcquirerRouter {
                                                      Integer expiryYear,
                                                      Integer cvv) {
 
-        Acquirer acquirer = resolveAcquirer(card);
+        PaymentAcquirer paymentAcquirer = resolveAcquirer(card);
 
-        // todo: forward authorization request to the acquirer
+        // todo: prepare ISO 88583 0100 request
 
-        return null;
+        Iso8583AuthRequest authRequest = new Iso8583AuthRequest();
+        authRequest.setPan(cardNumber);
+        authRequest.setAmount(transaction.getAmount().toString());
+
+        return paymentAcquirer.authorizePaymentRequest(authRequest);
     }
 
-    private Acquirer resolveAcquirer(Card card) {
+    private PaymentAcquirer resolveAcquirer(Card card) {
 
-        // todo: resolve acquirer based on card issuer
+        // todo: resolve acquirer based on card issuer and other factors
 
         return null;
     }
