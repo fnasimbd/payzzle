@@ -27,6 +27,7 @@ import com.example.payzzle.core.domain.model.*;
 import com.example.payzzle.core.domain.port.ARes;
 import com.example.payzzle.core.domain.port.BinData;
 import com.example.payzzle.core.domain.port.BinLookupService;
+import com.example.payzzle.core.domain.port.Iso8583AuthResponse;
 import com.example.payzzle.core.domain.repositories.MerchantRepository;
 import com.example.payzzle.core.domain.repositories.TransactionRepository;
 import com.example.payzzle.core.domain.services.AcquirerRouter;
@@ -131,10 +132,10 @@ public class PaymentController {
 
                 String acsTransID = authRes.getAcsTransID();
 
-                AuthorizationResponse response = acquirerRouter.processPaymentRequest(card, transaction, cardNumber,
+                Iso8583AuthResponse response = acquirerRouter.processPaymentRequest(card, transaction, cardNumber,
                         nameOnCard, expiryMonth, expiryYear, cvv);
 
-                if (response.isSuccess()) {
+                if (response.getResponseCode().equals("00")) {
 
                     transaction.markSuccessful();
 

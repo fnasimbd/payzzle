@@ -23,20 +23,20 @@
 package com.example.payzzle.core.domain.services;
 
 
-import com.example.payzzle.core.domain.model.AuthorizationResponse;
 import com.example.payzzle.core.domain.model.Card;
 import com.example.payzzle.core.domain.model.Transaction;
+import com.example.payzzle.core.domain.port.Iso8583AuthResponse;
 
 /**
  * Created by Farhan Nasim on 4/8/2026 11:01 PM
  */
 public interface AcquirerRouter {
 
-    AuthorizationResponse processPaymentRequest(Card card,
-                                                Transaction transaction,
-                                                String cardNumber,
-                                                String nameOnCard,
-                                                Integer expiryMonth,
-                                                Integer expiryYear,
-                                                Integer cvv);
+    Iso8583AuthResponse processPaymentRequest(Card card,
+                                              Transaction transaction,
+                                              String cardNumber,
+                                              String nameOnCard,
+                                              Integer expiryMonth,
+                                              Integer expiryYear,
+                                              Integer cvv);
 }
