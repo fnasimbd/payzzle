@@ -30,6 +30,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Farhan Nasim on 4/14/2026 1:48 AM
  */
@@ -60,9 +64,12 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
 
             String body = authorizationResponse.getBody();
 
-            // todo: deserialize body into ISO 8583 0110 response object
+            Map<Integer, String> dataElements = parseAuthorizationResponse(body);
 
             Iso8583AuthResponse response = new Iso8583AuthResponse();
+            response.setProcessingCode(dataElements.get(3));
+            response.setAmount(dataElements.get(4));
+            response.setResponseCode(dataElements.get(39));
 
             return response;
         } else {
@@ -70,5 +77,84 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
         }
 
         return null;
+    }
+
+    protected Map<Integer, String> parseAuthorizationResponse(String body) {
+
+        final Map<Integer, Integer> lengths = new HashMap<>();
+        lengths.put(2, 11); // PAN
+        lengths.put(3, 3); // processing code
+        lengths.put(4, 6); // transaction amount
+        lengths.put(6, 6); // cardholder billing amount
+        lengths.put(7, 5); // transmission date and time
+        lengths.put(10, 4); // cardholder billing conversion rate
+        lengths.put(11, 3); // system trace audit number (STAN)
+        lengths.put(12, 3); // local transaction time
+        lengths.put(13, 2); // local transaction date
+        lengths.put(21, 2); // forwarding institution country code
+        lengths.put(22, 2); // point of service entry mode
+        lengths.put(37, 12); // retrieval reference number
+        lengths.put(39, 2); // response code
+        lengths.put(41, 7); // card acceptor terminal identification (varies, can be 8 or 15 too)
+        lengths.put(46, 0); // invalid message reason
+        lengths.put(49, 2); // transaction currency code
+
+        var primaryBitmap = parsePrimaryBitmap(body.substring(4, 20));
+
+        int cur = 20;
+
+        Map<Integer, String> dataElements = new HashMap<>(primaryBitmap.length());
+
+        for (int i = 0; i < primaryBitmap.length(); i++) {
+
+            if (primaryBitmap.get(i)) {
+
+                int len;
+
+                if (i == 2) {
+                    len = Integer.parseInt(body.substring(cur, cur + 2));
+                    cur += 2;
+                } else if (i == 39) {
+                    len = lengths.get(i);
+                } else if (i == 41) {
+                    len = lengths.get(i);
+                } else {
+                    len = lengths.get(i) * 2;
+                }
+
+                String substring = body.substring(cur, cur + len);
+                dataElements.put(i, substring);
+
+                cur += len;
+            }
+        }
+
+        return dataElements;
+    }
+
+    protected BitSet parsePrimaryBitmap(String primaryBitmapString) {
+
+        BitSet primaryBitmap =  new BitSet(64);
+
+        int wordCount  = 0;
+
+        for (int i = 0; i < primaryBitmapString.length(); i++) {
+
+            int wordValue = Integer.parseInt(primaryBitmapString.substring(i, i + 1), 16);
+
+            int bit = 0;
+
+            while (wordValue > 0) {
+
+                primaryBitmap.set(wordCount + 3 - bit + 1, (wordValue & 1) != 0);
+
+                wordValue >>= 1;
+                bit++;
+            }
+
+            wordCount += 4;
+        }
+
+        return primaryBitmap;
     }
 }
