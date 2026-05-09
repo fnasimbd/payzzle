@@ -134,21 +134,20 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
 
     protected BitSet parsePrimaryBitmap(String primaryBitmapString) {
 
+        byte[] bitmapBytes = hexStringToBytes(primaryBitmapString);
+
         BitSet primaryBitmap =  new BitSet(64);
+        int byteCount  = 0;
 
-        int wordCount  = 0;
-
-        for (int i = 0; i < primaryBitmapString.length(); i++) {
-
-            int wordValue = Integer.parseInt(primaryBitmapString.substring(i, i + 1), 16);
+        for (int aByte : bitmapBytes) {
 
             int bit = 0;
 
-            while (wordValue > 0) {
+            while (aByte > 0) {
 
-                primaryBitmap.set(wordCount + 3 - bit + 1, (wordValue & 1) != 0);
+                primaryBitmap.set(byteCount + 3 - bit + 1, (aByte & 1) != 0);
 
-                wordValue >>= 1;
+                aByte >>= 1;
                 bit++;
             }
 
@@ -156,5 +155,17 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
         }
 
         return primaryBitmap;
+    }
+
+    private static byte[] hexStringToBytes(String byteString) {
+
+        byte[] bytes = new byte[byteString.length()];
+
+        for (int i = 0; i < byteString.length(); i++) {
+            String aByte = byteString.substring(i, i + 1);
+            bytes[i] = Byte.parseByte(aByte, 16);
+        }
+
+        return bytes;
     }
 }
