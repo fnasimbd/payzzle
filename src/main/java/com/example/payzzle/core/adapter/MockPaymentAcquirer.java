@@ -151,7 +151,7 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
                 bit++;
             }
 
-            wordCount += 4;
+            byteCount += 4;
         }
 
         return primaryBitmap;
