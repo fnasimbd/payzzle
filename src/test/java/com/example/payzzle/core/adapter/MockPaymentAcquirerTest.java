@@ -22,6 +22,7 @@
 
 package com.example.payzzle.core.adapter;
 
+import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
@@ -76,5 +77,20 @@ class MockPaymentAcquirerTest {
         elements.add(41);
 
         assertThat(integerStringMap.keySet().toArray()).containsAll(elements);
+    }
+
+    @Test
+    void encode_authorization_request_test() {
+
+        RestTemplate restTemplate = mock(RestTemplate.class);
+
+        MockPaymentAcquirer acquirer = new MockPaymentAcquirer(restTemplate);
+
+        Iso8583AuthRequest authRequest = new Iso8583AuthRequest();
+        authRequest.setPan("4761739001010010");
+        authRequest.setProcessingCode("072000");
+        authRequest.setAmount("100");
+
+        String message = acquirer.encodeAuthorizationRequest(authRequest);
     }
 }

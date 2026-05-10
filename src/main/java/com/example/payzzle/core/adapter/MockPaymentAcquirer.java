@@ -51,14 +51,10 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
     @Override
     public Iso8583AuthResponse authorizePaymentRequest(Iso8583AuthRequest authRequest) {
 
-        // todo: serialize 'authRequest' as ISO 8583 0100 message
-        // 0110B23AE4012AE080340000000004000020072000000000001860072420050101219016050107
-        // 24072407245411084000210A10420003141F0447708090104....D03081015541477F0F2F0F6F0
+        String data = encodeAuthorizationRequest(authRequest);
 
         ResponseEntity<String> authorizationResponse = restTemplate.postForEntity(
-                paymentAuthorizationUrl,
-                null, // todo: authRequest serialized to string as request body
-                String.class);
+                paymentAuthorizationUrl, data, String.class);
 
         if (authorizationResponse.getStatusCode().is2xxSuccessful()) {
 
@@ -77,6 +73,76 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
         }
 
         return null;
+    }
+
+    protected String encodeAuthorizationRequest(Iso8583AuthRequest authRequest) {
+
+        StringBuilder sb = new StringBuilder("0100");
+
+        BitSet primaryBitmap = constructPrimaryBitmap(authRequest);
+
+        String primaryBitmapHexString = convertBitSetToHexString(primaryBitmap, 64);
+
+        sb.append(primaryBitmapHexString);
+
+        for (int i = 0; i < primaryBitmap.length(); i++) {
+            if (primaryBitmap.get(i)) {
+                switch (i) {
+                    case 1:
+                        sb.append(primaryBitmapHexString);
+                        break;
+                    case 2:
+                        sb.append(authRequest.getPan().length());
+                        sb.append(authRequest.getPan());
+                        break;
+                    case 3:
+                        sb.append(authRequest.getProcessingCode());
+                        break;
+                    case 4:
+                        sb.append(authRequest.getAmount());
+                        break;
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private String convertBitSetToHexString(BitSet bitmap, int length) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 1; i < length + 1; i += 4) {
+
+            byte aByte = 0;
+
+            for (int j = 0; j < 4; j++) {
+                aByte |= (byte) (bitmap.get(i + j) ? (1 << 3 - j) : 0x00);
+            }
+
+            sb.append(String.format("%01x", aByte));
+        }
+
+        return sb.toString();
+    }
+
+    private BitSet constructPrimaryBitmap(Iso8583AuthRequest authRequest) {
+
+        BitSet primaryBitmap = new BitSet(65);
+
+        if (authRequest.getPan() != null) {
+            primaryBitmap.set(2);
+        }
+
+        if (authRequest.getProcessingCode() != null) {
+            primaryBitmap.set(3);
+        }
+
+        if (authRequest.getAmount() != null) {
+            primaryBitmap.set(4);
+        }
+
+        return primaryBitmap;
     }
 
     protected Map<Integer, String> parseAuthorizationResponse(String body) {
