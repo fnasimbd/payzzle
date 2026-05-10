@@ -162,8 +162,7 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
         byte[] bytes = new byte[byteString.length()];
 
         for (int i = 0; i < byteString.length(); i++) {
-            String aByte = byteString.substring(i, i + 1);
-            bytes[i] = Byte.parseByte(aByte, 16);
+            bytes[i] = (byte) Character.digit(byteString.charAt(i), 16);
         }
 
         return bytes;
