@@ -1,0 +1,147 @@
+[
+  {
+    "bin": "411111",
+    "scheme": "VISA",
+    "brand": "VISA CLASSIC",
+    "type": "CREDIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "JPMorgan Chase Bank",
+      "country": "US",
+      "currency": "USD"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": true,
+    "co_badged": false
+  },
+  {
+    "bin": "550000",
+    "scheme": "MASTERCARD",
+    "brand": "WORLD MASTERCARD",
+    "type": "CREDIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "Citibank",
+      "country": "US",
+      "currency": "USD"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": true,
+    "co_badged": false
+  },
+  {
+    "bin": "340000",
+    "scheme": "AMEX",
+    "brand": "AMERICAN EXPRESS",
+    "type": "CREDIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "American Express",
+      "country": "US",
+      "currency": "USD"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": true,
+    "co_badged": false
+  },
+  {
+    "bin": "356600",
+    "scheme": "JCB",
+    "brand": "JCB GOLD",
+    "type": "CREDIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "Mizuho Bank",
+      "country": "JP",
+      "currency": "JPY"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": true,
+    "co_badged": false
+  },
+  {
+    "bin": "620000",
+    "scheme": "UNIONPAY",
+    "brand": "UNIONPAY STANDARD",
+    "type": "DEBIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "Industrial and Commercial Bank of China",
+      "country": "CN",
+      "currency": "CNY"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": false,
+    "co_badged": false
+  },
+  {
+    "bin": "400000",
+    "scheme": "VISA",
+    "brand": "VISA BUSINESS",
+    "type": "CREDIT",
+    "funding": "COMMERCIAL",
+    "issuer": {
+      "name": "HSBC Bank",
+      "country": "GB",
+      "currency": "GBP"
+    },
+    "prepaid": false,
+    "commercial": true,
+    "3ds_supported": true,
+    "co_badged": false
+  },
+  {
+    "bin": "457100",
+    "scheme": "VISA",
+    "brand": "VISA PREPAID",
+    "type": "DEBIT",
+    "funding": "PREPAID",
+    "issuer": {
+      "name": "DBS Bank",
+      "country": "SG",
+      "currency": "SGD"
+    },
+    "prepaid": true,
+    "commercial": false,
+    "3ds_supported": true,
+    "co_badged": false
+  },
+  {
+    "bin": "506699",
+    "scheme": "VERVE",
+    "brand": "VERVE STANDARD",
+    "type": "DEBIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "Access Bank",
+      "country": "NG",
+      "currency": "NGN"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": false,
+    "co_badged": false
+  },
+  {
+    "bin": "670300",
+    "scheme": "MAESTRO",
+    "brand": "MAESTRO DEBIT",
+    "type": "DEBIT",
+    "funding": "CONSUMER",
+    "issuer": {
+      "name": "Santander",
+      "country": "ES",
+      "currency": "EUR"
+    },
+    "prepaid": false,
+    "commercial": false,
+    "3ds_supported": true,
+    "co_badged": true,
+    "co_badged_schemes": ["MASTERCARD", "MAESTRO"]
+  }
+]

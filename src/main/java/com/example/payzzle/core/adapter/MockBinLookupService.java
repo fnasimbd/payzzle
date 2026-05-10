@@ -25,12 +25,14 @@ package com.example.payzzle.core.adapter;
 
 import com.example.payzzle.core.domain.port.BinLookupService;
 import com.example.payzzle.core.domain.port.BinData;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -38,156 +40,6 @@ import java.util.List;
  */
 @Service
 public class MockBinLookupService implements BinLookupService {
-
-    private final String data = """
-        [
-          {
-            "bin": "411111",
-            "scheme": "VISA",
-            "brand": "VISA CLASSIC",
-            "type": "CREDIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "JPMorgan Chase Bank",
-              "country": "US",
-              "currency": "USD"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": true,
-            "co_badged": false
-          },
-          {
-            "bin": "550000",
-            "scheme": "MASTERCARD",
-            "brand": "WORLD MASTERCARD",
-            "type": "CREDIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "Citibank",
-              "country": "US",
-              "currency": "USD"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": true,
-            "co_badged": false
-          },
-          {
-            "bin": "340000",
-            "scheme": "AMEX",
-            "brand": "AMERICAN EXPRESS",
-            "type": "CREDIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "American Express",
-              "country": "US",
-              "currency": "USD"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": true,
-            "co_badged": false
-          },
-          {
-            "bin": "356600",
-            "scheme": "JCB",
-            "brand": "JCB GOLD",
-            "type": "CREDIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "Mizuho Bank",
-              "country": "JP",
-              "currency": "JPY"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": true,
-            "co_badged": false
-          },
-          {
-            "bin": "620000",
-            "scheme": "UNIONPAY",
-            "brand": "UNIONPAY STANDARD",
-            "type": "DEBIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "Industrial and Commercial Bank of China",
-              "country": "CN",
-              "currency": "CNY"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": false,
-            "co_badged": false
-          },
-          {
-            "bin": "400000",
-            "scheme": "VISA",
-            "brand": "VISA BUSINESS",
-            "type": "CREDIT",
-            "funding": "COMMERCIAL",
-            "issuer": {
-              "name": "HSBC Bank",
-              "country": "GB",
-              "currency": "GBP"
-            },
-            "prepaid": false,
-            "commercial": true,
-            "3ds_supported": true,
-            "co_badged": false
-          },
-          {
-            "bin": "457100",
-            "scheme": "VISA",
-            "brand": "VISA PREPAID",
-            "type": "DEBIT",
-            "funding": "PREPAID",
-            "issuer": {
-              "name": "DBS Bank",
-              "country": "SG",
-              "currency": "SGD"
-            },
-            "prepaid": true,
-            "commercial": false,
-            "3ds_supported": true,
-            "co_badged": false
-          },
-          {
-            "bin": "506699",
-            "scheme": "VERVE",
-            "brand": "VERVE STANDARD",
-            "type": "DEBIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "Access Bank",
-              "country": "NG",
-              "currency": "NGN"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": false,
-            "co_badged": false
-          },
-          {
-            "bin": "670300",
-            "scheme": "MAESTRO",
-            "brand": "MAESTRO DEBIT",
-            "type": "DEBIT",
-            "funding": "CONSUMER",
-            "issuer": {
-              "name": "Santander",
-              "country": "ES",
-              "currency": "EUR"
-            },
-            "prepaid": false,
-            "commercial": false,
-            "3ds_supported": true,
-            "co_badged": true,
-            "co_badged_schemes": ["MASTERCARD", "MAESTRO"]
-          }
-        ]
-        """;
 
     private final ObjectMapper objectMapper;
 
@@ -199,14 +51,17 @@ public class MockBinLookupService implements BinLookupService {
     @Override
     public BinData findBinData(String bin) {
 
+        List<BinData> binDataSet;
+
         try {
-            List<BinData> binDataSet = objectMapper.readValue(data, new TypeReference<>() {});
-
-            return binDataSet.stream().
-                    filter(entry -> entry.getBin().startsWith(bin.substring(0, 5))).findFirst().orElseThrow();
-
-        } catch (JsonProcessingException e) {
+            InputStream inputStream = new ClassPathResource("bin_data.json").getInputStream();
+            binDataSet = objectMapper.readValue(inputStream, new TypeReference<>() {});
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        return binDataSet.stream().filter(entry ->
+                        entry.getBin().startsWith(bin.substring(0, 5))).
+                findFirst().orElseThrow();
     }
 }
