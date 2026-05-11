@@ -30,8 +30,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -41,17 +39,19 @@ import java.util.Map;
 public class MockPaymentAcquirer implements PaymentAcquirer {
 
     private final RestTemplate restTemplate;
+    private final Iso8583Codec iso8583Codec;
 
     private String paymentAuthorizationUrl;
 
     public MockPaymentAcquirer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        this.iso8583Codec = new Iso8583Codec();
     }
 
     @Override
     public Iso8583AuthResponse authorizePaymentRequest(Iso8583AuthRequest authRequest) {
 
-        String data = encodeAuthorizationRequest(authRequest);
+        String data = iso8583Codec.encodeAuthorizationRequest(authRequest);
 
         ResponseEntity<String> authorizationResponse = restTemplate.postForEntity(
                 paymentAuthorizationUrl, data, String.class);
@@ -60,7 +60,7 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
 
             String body = authorizationResponse.getBody();
 
-            Map<Integer, String> dataElements = parseAuthorizationResponse(body);
+            Map<Integer, String> dataElements = iso8583Codec.decodeAuthorizationResponse(body);
 
             Iso8583AuthResponse response = new Iso8583AuthResponse();
             response.setProcessingCode(dataElements.get(3));
@@ -73,164 +73,5 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
         }
 
         return null;
-    }
-
-    protected String encodeAuthorizationRequest(Iso8583AuthRequest authRequest) {
-
-        StringBuilder sb = new StringBuilder("0100");
-
-        BitSet primaryBitmap = constructPrimaryBitmap(authRequest);
-
-        String primaryBitmapHexString = convertBitSetToHexString(primaryBitmap, 64);
-
-        sb.append(primaryBitmapHexString);
-
-        for (int i = 0; i < primaryBitmap.length(); i++) {
-            if (primaryBitmap.get(i)) {
-                switch (i) {
-                    case 1:
-                        sb.append(primaryBitmapHexString);
-                        break;
-                    case 2:
-                        sb.append(authRequest.getPan().length());
-                        sb.append(authRequest.getPan());
-                        break;
-                    case 3:
-                        sb.append(authRequest.getProcessingCode());
-                        break;
-                    case 4:
-                        sb.append(authRequest.getAmount());
-                        break;
-                }
-            }
-        }
-
-        return sb.toString();
-    }
-
-    private String convertBitSetToHexString(BitSet bitmap, int length) {
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 1; i < length + 1; i += 4) {
-
-            byte aByte = 0;
-
-            for (int j = 0; j < 4; j++) {
-                aByte |= (byte) (bitmap.get(i + j) ? (1 << 3 - j) : 0x00);
-            }
-
-            sb.append(String.format("%01x", aByte));
-        }
-
-        return sb.toString();
-    }
-
-    private BitSet constructPrimaryBitmap(Iso8583AuthRequest authRequest) {
-
-        BitSet primaryBitmap = new BitSet(65);
-
-        if (authRequest.getPan() != null) {
-            primaryBitmap.set(2);
-        }
-
-        if (authRequest.getProcessingCode() != null) {
-            primaryBitmap.set(3);
-        }
-
-        if (authRequest.getAmount() != null) {
-            primaryBitmap.set(4);
-        }
-
-        return primaryBitmap;
-    }
-
-    protected Map<Integer, String> parseAuthorizationResponse(String body) {
-
-        final Map<Integer, Integer> lengths = new HashMap<>();
-        lengths.put(2, 11); // PAN
-        lengths.put(3, 3); // processing code
-        lengths.put(4, 6); // transaction amount
-        lengths.put(6, 6); // cardholder billing amount
-        lengths.put(7, 5); // transmission date and time
-        lengths.put(10, 4); // cardholder billing conversion rate
-        lengths.put(11, 3); // system trace audit number (STAN)
-        lengths.put(12, 3); // local transaction time
-        lengths.put(13, 2); // local transaction date
-        lengths.put(21, 2); // forwarding institution country code
-        lengths.put(22, 2); // point of service entry mode
-        lengths.put(37, 12); // retrieval reference number
-        lengths.put(39, 2); // response code
-        lengths.put(41, 7); // card acceptor terminal identification (varies, can be 8 or 15 too)
-        lengths.put(46, 0); // invalid message reason
-        lengths.put(49, 2); // transaction currency code
-
-        var primaryBitmap = parsePrimaryBitmap(body.substring(4, 20));
-
-        int cur = 20;
-
-        Map<Integer, String> dataElements = new HashMap<>(primaryBitmap.length());
-
-        for (int i = 0; i < primaryBitmap.length(); i++) {
-
-            if (primaryBitmap.get(i)) {
-
-                int len;
-
-                if (i == 2) {
-                    len = Integer.parseInt(body.substring(cur, cur + 2));
-                    cur += 2;
-                } else if (i == 39) {
-                    len = lengths.get(i);
-                } else if (i == 41) {
-                    len = lengths.get(i);
-                } else {
-                    len = lengths.get(i) * 2;
-                }
-
-                String substring = body.substring(cur, cur + len);
-                dataElements.put(i, substring);
-
-                cur += len;
-            }
-        }
-
-        return dataElements;
-    }
-
-    protected BitSet parsePrimaryBitmap(String primaryBitmapString) {
-
-        byte[] bitmapBytes = hexStringToBytes(primaryBitmapString);
-
-        BitSet primaryBitmap =  new BitSet(64);
-        int byteCount  = 0;
-
-        for (int aByte : bitmapBytes) {
-
-            int bit = 0;
-
-            while (aByte > 0) {
-
-                primaryBitmap.set(byteCount + 3 - bit + 1, (aByte & 1) != 0);
-
-                aByte >>= 1;
-                bit++;
-            }
-
-            byteCount += 4;
-        }
-
-        return primaryBitmap;
-    }
-
-    private static byte[] hexStringToBytes(String byteString) {
-
-        byte[] bytes = new byte[byteString.length()];
-
-        for (int i = 0; i < byteString.length(); i++) {
-            bytes[i] = (byte) Character.digit(byteString.charAt(i), 16);
-        }
-
-        return bytes;
     }
 }

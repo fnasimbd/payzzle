@@ -24,14 +24,12 @@ package com.example.payzzle.core.adapter;
 
 import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
 
 /**
  * Created by Farhan Nasim on 5/9/2026 7:06 PM
@@ -41,11 +39,9 @@ class MockPaymentAcquirerTest {
     @Test
     void parse_primary_bitmap_test() {
 
-        RestTemplate restTemplate = mock(RestTemplate.class);
+        Iso8583Codec iso8583Codec = new Iso8583Codec();
 
-        MockPaymentAcquirer acquirer = new MockPaymentAcquirer(restTemplate);
-
-        BitSet primaryBitmap = acquirer.parsePrimaryBitmap("7238040000020000");
+        BitSet primaryBitmap = iso8583Codec.parsePrimaryBitmap("7238040000020000");
 
         assertThat(primaryBitmap.cardinality()).isEqualTo(9);
     }
@@ -53,7 +49,7 @@ class MockPaymentAcquirerTest {
     @Test
     void parse_authorization_response_test() {
 
-        RestTemplate restTemplate = mock(RestTemplate.class);
+        Iso8583Codec iso8583Codec = new Iso8583Codec();
 
         MockPaymentAcquirer acquirer = new MockPaymentAcquirer(restTemplate);
 
@@ -65,7 +61,7 @@ class MockPaymentAcquirerTest {
                 "00" +
                 "TERMID1";
 
-        Map<Integer, String> integerStringMap = acquirer.parseAuthorizationResponse(response);
+        Map<Integer, String> integerStringMap = iso8583Codec.decodeAuthorizationResponse(response);
 
         assertThat(integerStringMap.size()).isEqualTo(5);
 
@@ -82,15 +78,13 @@ class MockPaymentAcquirerTest {
     @Test
     void encode_authorization_request_test() {
 
-        RestTemplate restTemplate = mock(RestTemplate.class);
-
-        MockPaymentAcquirer acquirer = new MockPaymentAcquirer(restTemplate);
+        Iso8583Codec iso8583Codec = new Iso8583Codec();
 
         Iso8583AuthRequest authRequest = new Iso8583AuthRequest();
         authRequest.setPan("4761739001010010");
         authRequest.setProcessingCode("072000");
         authRequest.setAmount("100");
 
-        String message = acquirer.encodeAuthorizationRequest(authRequest);
+        String message = iso8583Codec.encodeAuthorizationRequest(authRequest);
     }
 }
