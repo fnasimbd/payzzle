@@ -51,8 +51,6 @@ class MockPaymentAcquirerTest {
 
         Iso8583Codec iso8583Codec = new Iso8583Codec();
 
-        MockPaymentAcquirer acquirer = new MockPaymentAcquirer(restTemplate);
-
         String response = "0110" +
                 "3020000002800000" +
                 "000000" +
