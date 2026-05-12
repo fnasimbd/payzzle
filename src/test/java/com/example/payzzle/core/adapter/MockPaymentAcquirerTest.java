@@ -59,7 +59,7 @@ class MockPaymentAcquirerTest {
                 "00" +
                 "TERMID1";
 
-        Map<Integer, String> integerStringMap = iso8583Codec.decodeAuthorizationResponse(response);
+        Map<Integer, String> integerStringMap = iso8583Codec.parseDataElements(response);
 
         assertThat(integerStringMap.size()).isEqualTo(5);
 

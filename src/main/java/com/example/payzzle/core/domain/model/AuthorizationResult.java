@@ -20,23 +20,30 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.services;
+package com.example.payzzle.core.domain.model;
 
-
-import com.example.payzzle.core.domain.model.AuthorizationResult;
-import com.example.payzzle.core.domain.model.Card;
-import com.example.payzzle.core.domain.model.Transaction;
 
 /**
- * Created by Farhan Nasim on 4/8/2026 11:01 PM
+ * Created by Farhan Nasim on 5/12/2026 11:53 PM
  */
-public interface AcquirerRouter {
+public class AuthorizationResult {
 
-    AuthorizationResult processPaymentRequest(Card card,
-                                              Transaction transaction,
-                                              String cardNumber,
-                                              String nameOnCard,
-                                              Integer expiryMonth,
-                                              Integer expiryYear,
-                                              Integer cvv);
+    private boolean approved;
+    private String rejectionReason;
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
 }

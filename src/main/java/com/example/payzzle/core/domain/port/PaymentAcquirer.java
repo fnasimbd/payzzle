@@ -23,9 +23,11 @@
 package com.example.payzzle.core.domain.port;
 
 
+import com.example.payzzle.core.domain.model.AuthorizationResult;
+
 /**
  * Created by Farhan Nasim on 4/5/2026 11:12 PM
  */
 public interface PaymentAcquirer {
-    Iso8583AuthResponse authorizePaymentRequest(Iso8583AuthRequest authRequest);
+    AuthorizationResult authorizePaymentRequest(Iso8583AuthRequest authRequest);
 }

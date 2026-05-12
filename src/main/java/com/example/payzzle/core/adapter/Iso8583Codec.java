@@ -69,7 +69,19 @@ public class Iso8583Codec {
         return sb.toString();
     }
 
-    public Map<Integer, String> decodeAuthorizationResponse(String body) {
+    public Iso8583AuthResponse decodeAuthorizationResponse(String body) {
+
+        Map<Integer, String> dataElements = parseDataElements(body);
+
+        var response = new Iso8583AuthResponse();
+        response.setProcessingCode(dataElements.get(3));
+        response.setAmount(dataElements.get(4));
+        response.setResponseCode(dataElements.get(39));
+
+        return response;
+    }
+
+    protected Map<Integer, String> parseDataElements(String body) {
 
         final Map<Integer, Integer> lengths = new HashMap<>();
         lengths.put(2, 11); // PAN

@@ -23,14 +23,12 @@
 package com.example.payzzle.core.adapter;
 
 
+import com.example.payzzle.core.domain.model.AuthorizationResult;
 import com.example.payzzle.core.domain.port.PaymentAcquirer;
 import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
-import com.example.payzzle.core.domain.port.Iso8583AuthResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 /**
  * Created by Farhan Nasim on 4/14/2026 1:48 AM
@@ -49,7 +47,7 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
     }
 
     @Override
-    public Iso8583AuthResponse authorizePaymentRequest(Iso8583AuthRequest authRequest) {
+    public AuthorizationResult authorizePaymentRequest(Iso8583AuthRequest authRequest) {
 
         String data = iso8583Codec.encodeAuthorizationRequest(authRequest);
 
@@ -60,14 +58,12 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
 
             String body = authorizationResponse.getBody();
 
-            Map<Integer, String> dataElements = iso8583Codec.decodeAuthorizationResponse(body);
+            Iso8583AuthResponse response = iso8583Codec.decodeAuthorizationResponse(body);
 
-            Iso8583AuthResponse response = new Iso8583AuthResponse();
-            response.setProcessingCode(dataElements.get(3));
-            response.setAmount(dataElements.get(4));
-            response.setResponseCode(dataElements.get(39));
+            var response1 = new AuthorizationResult();
+            response1.setApproved(response.getResponseCode().equals("00"));
 
-            return response;
+            return response1;
         } else {
             // todo: throw an exception
         }
