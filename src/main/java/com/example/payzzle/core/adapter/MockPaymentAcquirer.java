@@ -64,14 +64,33 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
 
             Iso8583AuthResponse response = iso8583Codec.decodeAuthorizationResponse(body);
 
-            var response1 = new AuthorizationResult();
-            response1.setApproved(response.getResponseCode().equals("00"));
+            return mapResponseToAuthorizationResult(response);
 
-            return response1;
         } else {
             // todo: throw an exception
         }
 
         return null;
+    }
+
+    private static AuthorizationResult mapResponseToAuthorizationResult(Iso8583AuthResponse response) {
+
+        var result = new AuthorizationResult();
+
+        result.setApproved(response.getResponseCode().equals("00"));
+
+        switch (response.getResponseCode()) {
+            case "05" -> result.setRejectionReason("Do not honor.");
+            case "12" -> result.setRejectionReason("Invalid transaction.");
+            case "13" -> result.setRejectionReason("Invalid amount.");
+            case "14" -> result.setRejectionReason("Invalid card number.");
+            case "41" -> result.setRejectionReason("Lost card.");
+            case "43" -> result.setRejectionReason("Stolen card.");
+            case "51" -> result.setRejectionReason("Insufficient funds.");
+            case "54" -> result.setRejectionReason("Expired card.");
+            case "91" -> result.setRejectionReason("Issuer unavailable.");
+        }
+
+        return result;
     }
 }
