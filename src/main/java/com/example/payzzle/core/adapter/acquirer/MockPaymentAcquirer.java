@@ -20,7 +20,7 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.adapter;
+package com.example.payzzle.core.adapter.acquirer;
 
 
 import com.example.payzzle.core.domain.model.AuthorizationResult;
