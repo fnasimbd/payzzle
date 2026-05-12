@@ -67,10 +67,8 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
             return mapResponseToAuthorizationResult(response);
 
         } else {
-            // todo: throw an exception
+            throw new InvalidAcquirerResponseException();
         }
-
-        return null;
     }
 
     private static AuthorizationResult mapResponseToAuthorizationResult(Iso8583AuthResponse response) {
