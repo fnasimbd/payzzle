@@ -22,7 +22,6 @@
 
 package com.example.payzzle.core.adapter;
 
-import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

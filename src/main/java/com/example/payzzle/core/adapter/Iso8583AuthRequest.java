@@ -20,7 +20,7 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.payzzle.core.domain.port;
+package com.example.payzzle.core.adapter;
 
 
 /**

@@ -23,8 +23,6 @@
 package com.example.payzzle.core.adapter;
 
 
-import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
-
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;

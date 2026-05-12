@@ -26,7 +26,6 @@ package com.example.payzzle.core.domain.services;
 import com.example.payzzle.core.domain.model.AuthorizationResult;
 import com.example.payzzle.core.domain.model.Card;
 import com.example.payzzle.core.domain.model.Transaction;
-import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
 import com.example.payzzle.core.domain.port.PaymentAcquirer;
 import org.springframework.stereotype.Service;
 
@@ -47,13 +46,7 @@ public class AcquirerRouterImpl implements AcquirerRouter {
 
         PaymentAcquirer paymentAcquirer = resolveAcquirer(card);
 
-        // todo: prepare ISO 88583 0100 request
-
-        Iso8583AuthRequest authRequest = new Iso8583AuthRequest();
-        authRequest.setPan(cardNumber);
-        authRequest.setAmount(transaction.getAmount().toString());
-
-        return paymentAcquirer.authorizePaymentRequest(authRequest);
+        return paymentAcquirer.authorizePaymentRequest(cardNumber, transaction.getAmount());
     }
 
     private PaymentAcquirer resolveAcquirer(Card card) {

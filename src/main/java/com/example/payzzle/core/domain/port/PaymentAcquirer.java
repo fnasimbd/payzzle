@@ -29,5 +29,7 @@ import com.example.payzzle.core.domain.model.AuthorizationResult;
  * Created by Farhan Nasim on 4/5/2026 11:12 PM
  */
 public interface PaymentAcquirer {
-    AuthorizationResult authorizePaymentRequest(Iso8583AuthRequest authRequest);
+
+    AuthorizationResult authorizePaymentRequest(String cardNumber,
+                                                Integer amount);
 }

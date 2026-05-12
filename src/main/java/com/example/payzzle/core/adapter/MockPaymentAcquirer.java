@@ -25,7 +25,6 @@ package com.example.payzzle.core.adapter;
 
 import com.example.payzzle.core.domain.model.AuthorizationResult;
 import com.example.payzzle.core.domain.port.PaymentAcquirer;
-import com.example.payzzle.core.domain.port.Iso8583AuthRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -47,7 +46,12 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
     }
 
     @Override
-    public AuthorizationResult authorizePaymentRequest(Iso8583AuthRequest authRequest) {
+    public AuthorizationResult authorizePaymentRequest(String cardNumber,
+                                                       Integer amount) {
+
+        Iso8583AuthRequest authRequest = new Iso8583AuthRequest();
+        authRequest.setPan(cardNumber);
+        authRequest.setAmount(amount.toString());
 
         String data = iso8583Codec.encodeAuthorizationRequest(authRequest);
 
