@@ -1,3 +1,5 @@
+![logo](./logo.png)
+
 # Payzzle: Payment Orchestration System
 
 [![CI](https://github.com/fnasimbd/payzzle/actions/workflows/ci.yml/badge.svg)](https://github.com/fnasimbd/payzzle/actions)
