@@ -25,6 +25,7 @@ package com.example.payzzle.core.domain.services;
 
 import com.example.payzzle.core.domain.model.AuthorizationResult;
 import com.example.payzzle.core.domain.model.Card;
+import com.example.payzzle.core.domain.model.NoSuitableAcquirerException;
 import com.example.payzzle.core.domain.model.Transaction;
 import com.example.payzzle.core.domain.port.PaymentAcquirer;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,6 @@ public class AcquirerRouterImpl implements AcquirerRouter {
         return paymentAcquirers.stream().
                 filter(ac -> ac.supportsScheme(card.getScheme())).
                 findFirst().
-                orElseThrow(InvalidAcquirerResponseException::new);
+                orElseThrow(NoSuitableAcquirerException::new);
     }
 }
