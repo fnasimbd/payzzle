@@ -29,6 +29,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 /**
  * Created by Farhan Nasim on 4/14/2026 1:48 AM
  */
@@ -69,6 +71,11 @@ public class MockPaymentAcquirer implements PaymentAcquirer {
         } else {
             throw new InvalidAcquirerResponseException();
         }
+    }
+
+    @Override
+    public boolean supportsScheme(String scheme) {
+        return Objects.equals(scheme, "VISA");
     }
 
     private static AuthorizationResult mapResponseToAuthorizationResult(Iso8583AuthResponse response) {

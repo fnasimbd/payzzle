@@ -29,11 +29,19 @@ import com.example.payzzle.core.domain.model.Transaction;
 import com.example.payzzle.core.domain.port.PaymentAcquirer;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Farhan Nasim on 4/12/2026 9:00 PM
  */
 @Service
 public class AcquirerRouterImpl implements AcquirerRouter {
+
+    private final List<PaymentAcquirer> paymentAcquirers;
+
+    public AcquirerRouterImpl(List<PaymentAcquirer> paymentAcquirers) {
+        this.paymentAcquirers = paymentAcquirers;
+    }
 
     @Override
     public AuthorizationResult processPaymentRequest(Card card,
@@ -53,6 +61,9 @@ public class AcquirerRouterImpl implements AcquirerRouter {
 
         // todo: resolve acquirer based on card issuer and other factors
 
-        return null;
+        return paymentAcquirers.stream().
+                filter(ac -> ac.supportsScheme(card.getScheme())).
+                findFirst().
+                orElseThrow(InvalidAcquirerResponseException::new);
     }
 }

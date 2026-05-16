@@ -32,4 +32,6 @@ public interface PaymentAcquirer {
 
     AuthorizationResult authorizePaymentRequest(String cardNumber,
                                                 Integer amount);
+
+    boolean supportsScheme(String scheme);
 }
